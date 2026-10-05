@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La Laguna del Inglés · Ignacio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --water:#0E6E7A; --deep:#084650; --leaf:#7CCB4A; --sun:#FFD23F; --coral:#FF6B5B;
+  --bg:#E4F6F1; --card:#FFFFFF; --ink:#173B40; --soft:#5E7F83; --line:#C7E6DE;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0B2A2F; --card:#123A40; --ink:#EAF7F4; --soft:#9EC3C6; --line:#1F5259; --deep:#06343B; } }
+:root[data-theme="dark"]{ --bg:#0B2A2F; --card:#123A40; --ink:#EAF7F4; --soft:#9EC3C6; --line:#1F5259; --deep:#06343B; }
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:"Baloo 2",ui-rounded,"Comic Sans MS","Trebuchet MS",system-ui,sans-serif;font-size:18px;line-height:1.35;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer;border:none;background:none}
+button:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
+.wrap{max-width:560px;margin:0 auto;padding:16px 16px 40px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.back{font-weight:700;color:var(--water);padding:6px 10px;border-radius:12px;visibility:hidden}
+.back.show{visibility:visible}
+.stars{background:var(--sun);color:#3B2B00;font-weight:800;padding:4px 14px;border-radius:999px;font-size:20px}
+.hero{background:var(--water);color:#fff;border-radius:28px 28px 28px 8px;padding:18px 18px 0;position:relative;overflow:hidden;margin-bottom:18px}
+.hero h1{margin:0;font-size:32px;line-height:1.05;font-weight:800}
+.hero p{margin:6px 0 0;font-size:17px;opacity:.92;max-width:20ch}
+.hero .count{display:inline-block;margin-top:10px;background:var(--coral);padding:2px 12px;border-radius:999px;font-weight:700;font-size:16px}
+.hero svg{display:block;width:100%;height:auto;margin-top:6px}
+.gatorHead{position:absolute;right:8px;top:14px;width:120px}
+.missions{display:grid;gap:12px}
+.mission{display:flex;align-items:center;gap:14px;text-align:left;background:var(--card);border:3px solid var(--line);border-radius:20px;padding:12px 14px;transition:transform .12s}
+.mission:active{transform:scale(.97)}
+.mission .ico{font-size:34px;width:54px;height:54px;display:grid;place-items:center;border-radius:16px;flex:none}
+.mission b{display:block;font-size:21px;line-height:1.1}
+.mission span{color:var(--soft);font-size:15px}
+.mission .done{margin-left:auto;font-size:22px}
+.screen{display:none}.screen.on{display:block}
+h2{font-size:26px;margin:4px 0 2px;line-height:1.1}
+.sub{color:var(--soft);margin:0 0 14px;font-size:16px}
+/* flashcards */
+.flip{perspective:1000px;width:100%;height:260px;margin-bottom:14px}
+.flip .inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flip.turned .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center}
+.front{background:var(--card);border:4px solid var(--leaf)}
+.back-face{background:var(--leaf);color:#173B00;transform:rotateY(180deg)}
+.face .emo{font-size:62px;line-height:1}
+.face .word{font-size:36px;font-weight:800;line-height:1.1;margin-top:6px}
+.face .hint{font-size:14px;color:var(--soft);margin-top:8px}
+.back-face .hint{color:#2E5410}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.btn{flex:1;min-width:120px;padding:12px 14px;border-radius:16px;font-weight:800;font-size:19px;background:var(--water);color:#fff;box-shadow:0 4px 0 var(--deep)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--deep)}
+.btn.alt{background:var(--card);color:var(--ink);border:3px solid var(--line);box-shadow:0 4px 0 var(--line)}
+.btn.sun{background:var(--sun);color:#3B2B00;box-shadow:0 4px 0 #C99E00}
+.prog{height:12px;background:var(--line);border-radius:99px;overflow:hidden;margin:6px 0 14px}
+.prog i{display:block;height:100%;background:var(--leaf);width:0;transition:width .3s}
+.unitTabs{display:flex;gap:8px;margin-bottom:12px}
+.unitTabs button{flex:1;padding:8px;border-radius:14px;border:3px solid var(--line);font-weight:700;background:var(--card)}
+.unitTabs button[aria-pressed="true"]{background:var(--water);color:#fff;border-color:var(--water)}
+/* quiz */
+.q{background:var(--card);border:3px solid var(--line);border-radius:22px;padding:16px;margin-bottom:12px}
+.q .say{font-size:23px;font-weight:700;line-height:1.25}
+.q .say .blank{display:inline-block;min-width:70px;border-bottom:3px dashed var(--coral);text-align:center;color:var(--coral)}
+.opts{display:grid;gap:10px}
+.opt{text-align:left;padding:12px 16px;border-radius:16px;background:var(--card);border:3px solid var(--line);font-size:20px;font-weight:700}
+.opt.ok{background:var(--leaf);border-color:var(--leaf);color:#173B00}
+.opt.bad{background:var(--coral);border-color:var(--coral);color:#fff}
+.feedback{min-height:56px;display:flex;align-items:center;gap:10px;margin:10px 0;font-weight:700;font-size:18px}
+.feedback .mini{width:52px;flex:none}
+.cebtns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cebtns .opt{text-align:center;font-size:24px}
+/* speech */
+.line{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:3px solid var(--line);border-radius:18px;padding:12px;margin-bottom:10px}
+.line.said{border-color:var(--leaf);background:color-mix(in srgb,var(--leaf) 18%,var(--card))}
+.line .tag{font-size:12px;font-weight:800;padding:2px 8px;border-radius:8px;color:#fff;flex:none;margin-top:4px}
+.line p{margin:0;flex:1;font-size:19px}
+.spk{flex:none;width:44px;height:44px;border-radius:14px;background:var(--sun);font-size:22px;display:grid;place-items:center}
+.chk{flex:none;width:44px;height:44px;border-radius:14px;border:3px solid var(--line);font-size:22px;display:grid;place-items:center;background:var(--card)}
+.line.said .chk{background:var(--leaf);border-color:var(--leaf)}
+.end{text-align:center;padding:18px 8px}
+.end .big{font-size:64px;line-height:1}
+.end h3{font-size:28px;margin:6px 0}
+.tip{font-size:15px;color:var(--soft);text-align:center;margin-top:14px}
+@keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+.pop{animation:pop .35s ease-out}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+<style>
+.pron{font-size:16px;color:var(--soft);margin-top:4px;font-weight:600}
+.front .pron{color:var(--water)}
+.btn.small{flex:0 0 auto;min-width:0;padding:10px 14px}
+.notice{display:none;background:var(--coral);color:#fff;border-radius:16px;padding:10px 14px;margin-bottom:12px;font-weight:700;font-size:16px}
+.notice.on{display:block}
+.trophy{display:none;background:var(--sun);color:#3B2B00;border-radius:20px;padding:12px 14px;margin-bottom:12px;font-weight:800;text-align:center;font-size:19px}
+.trophy.on{display:block}
+.mission.final{border-color:var(--sun);background:color-mix(in srgb,var(--sun) 22%,var(--card))}
+.order .pick{display:block;width:100%;text-align:left;padding:12px 14px;margin-bottom:8px;border-radius:16px;border:3px solid var(--line);background:var(--card);font-size:18px;font-weight:600}
+.order .pick.used{opacity:.35}
+.order .pick.bad{background:var(--coral);color:#fff;border-color:var(--coral)}
+.built{min-height:60px;border:3px dashed var(--leaf);border-radius:18px;padding:8px;margin-bottom:12px}
+.built div{background:color-mix(in srgb,var(--leaf) 22%,var(--card));border-radius:12px;padding:8px 10px;margin:4px 0;font-size:17px}
+.built div small{font-weight:800;color:var(--water);margin-right:6px}
+.rec{display:flex;gap:10px;margin:10px 0}
+.rec .btn{font-size:17px}
+.rec .btn.recording{background:var(--coral);box-shadow:0 4px 0 #B8392B}
+.cert{background:var(--card);border:6px double var(--sun);border-radius:24px;padding:22px 16px;text-align:center}
+.cert h3{font-size:30px;margin:4px 0}
+.cert .name{font-size:34px;font-weight:800;color:var(--water)}
+.lesson{background:var(--card);border:3px solid var(--line);border-radius:18px;padding:12px 14px;margin-bottom:10px}
+.lesson b{color:var(--water)}
+.lesson .ex{display:flex;align-items:center;gap:8px;margin-top:6px}
+.lesson .ex span{flex:1}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <button class="back" id="backBtn" aria-label="Volver al inicio">← Inicio</button>
+    <div class="stars" id="stars" aria-live="polite">⭐ 0</div>
+  </header>
+  <div class="notice" id="notice">🔇 Este navegador no reproduce el audio. Abre el enlace en Chrome o Safari y sube el volumen. Mientras tanto, usa la pronunciación escrita debajo de cada palabra.</div>
+
+  <section class="screen on" id="home">
+    <div class="hero">
+      <h1>La Laguna<br>del Inglés</h1>
+      <p>Ayuda a Gus el lagarto a ganar el examen de Speaking</p>
+      <span class="count" id="countdown"></span>
+      <svg class="gatorHead" viewBox="0 0 160 110" aria-hidden="true">
+        <ellipse cx="80" cy="70" rx="74" ry="34" fill="#7CCB4A"/><ellipse cx="44" cy="40" rx="22" ry="22" fill="#7CCB4A"/><ellipse cx="96" cy="40" rx="22" ry="22" fill="#7CCB4A"/>
+        <circle cx="44" cy="38" r="13" fill="#fff"/><circle cx="96" cy="38" r="13" fill="#fff"/><circle cx="47" cy="40" r="6" fill="#173B40"/><circle cx="99" cy="40" r="6" fill="#173B40"/>
+        <circle cx="49" cy="37" r="2" fill="#fff"/><circle cx="101" cy="37" r="2" fill="#fff"/><circle cx="140" cy="62" r="3" fill="#3F8A22"/><circle cx="128" cy="60" r="3" fill="#3F8A22"/>
+        <path d="M18 78 Q80 104 150 74" stroke="#3F8A22" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M40 84 l6 -8 l6 9 M70 90 l6 -8 l6 9 M100 88 l6 -8 l6 8" fill="#fff"/>
+        <circle cx="30" cy="66" r="4" fill="#A6E07A"/><circle cx="60" cy="58" r="3" fill="#A6E07A"/><circle cx="112" cy="58" r="4" fill="#A6E07A"/>
+      </svg>
+      <svg viewBox="0 0 400 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 20 Q50 0 100 20 T200 20 T300 20 T400 20 V40 H0Z" fill="#0B5A64"/></svg>
+    </div>
+    <div class="trophy" id="trophy">🏆 ¡Completaste todas las misiones! Ahora haz el Examen final.</div>
+    <div class="row" style="margin-bottom:12px"><button class="btn sun" id="testAudio">🔊 Probar el audio</button></div>
+    <div class="missions">
+      <button class="mission" data-go="learn"><span class="ico" style="background:#E8E4FF">📖</span><div><b>1. Aprende las reglas</b><span>Both, but, because, so y sense verbs</span></div><span class="done" id="d-learn"></span></button>
+      <button class="mission" data-go="cards"><span class="ico" style="background:#E5F7D6">🃏</span><div><b>2. Tarjetas mágicas</b><span>36 palabras con audio y pronunciación</span></div><span class="done" id="d-cards"></span></button>
+      <button class="mission" data-go="ce"><span class="ico" style="background:#FFE1DD">⚡</span><div><b>3. because o so</b><span>¿Es la causa o el efecto?</span></div><span class="done" id="d-ce"></span></button>
+      <button class="mission" data-go="order"><span class="ico" style="background:#FFF3C4">🧩</span><div><b>4. Ordena el speech</b><span>Intro, body y ending en su lugar</span></div><span class="done" id="d-order"></span></button>
+      <button class="mission" data-go="quiz"><span class="ico" style="background:#FFF3C4">🎯</span><div><b>5. Reto relámpago</b><span>12 preguntas al azar</span></div><span class="done" id="d-quiz"></span></button>
+      <button class="mission" data-go="speech"><span class="ico" style="background:#D9F1F4">🎤</span><div><b>6. ¡Habla como un pro!</b><span>4 speeches: escucha, repite y grábate</span></div><span class="done" id="d-speech"></span></button>
+      <button class="mission final" data-go="final"><span class="ico" style="background:#FFD23F">🏆</span><div><b>Examen final</b><span>15 preguntas. Saca 12 y gana tu diploma</span></div><span class="done" id="d-final"></span></button>
+    </div>
+    <p class="tip">Toca 🔊 para oír y 🐢 para oír despacio. ¡Repite siempre en voz alta!</p>
+    <p class="tip"><button id="reset" style="text-decoration:underline;color:var(--soft)">Borrar mi progreso</button></p>
+  </section>
+
+  <section class="screen" id="learn"><h2>Aprende las reglas</h2><p class="sub">Lee cada regla, escucha el ejemplo y repítelo.</p><div id="learnBody"></div>
+    <button class="btn" id="learnDone" style="width:100%">¡Ya me lo aprendí! ⭐</button></section>
+
+  <section class="screen" id="cards">
+    <h2>Tarjetas mágicas</h2><p class="sub">Toca la tarjeta para ver qué significa.</p>
+    <div class="unitTabs" role="group"><button data-unit="9" aria-pressed="true">Unit 9 🐊</button><button data-unit="10" aria-pressed="false">Unit 10 🤧</button></div>
+    <div class="prog"><i id="cardProg"></i></div>
+    <div class="flip" id="flip" role="button" tabindex="0" aria-label="Voltear tarjeta"><div class="inner">
+      <div class="face front"><div class="emo" id="cEmo"></div><div class="word" id="cWord"></div><div class="pron" id="cPron"></div><div class="hint">toca para voltear</div></div>
+      <div class="face back-face"><div class="emo" id="cEmo2"></div><div class="word" id="cEs"></div><div class="hint" id="cEx"></div></div></div></div>
+    <div class="row"><button class="btn sun" id="cSpeak">🔊 Escuchar</button><button class="btn sun small" id="cSlow" aria-label="Escuchar despacio">🐢</button><button class="btn alt small" id="cPrev" aria-label="Anterior">◀</button><button class="btn" id="cNext">Siguiente ▶</button></div>
+  </section>
+
+  <section class="screen" id="ce"><h2>because o so</h2><p class="sub"><b>because</b> va antes de la razón. <b>so</b> va antes de lo que pasó después.</p><div class="prog"><i id="ceProg"></i></div><div id="ceBody"></div></section>
+
+  <section class="screen" id="order"><h2>Ordena el speech</h2><p class="sub" id="oSub"></p><div class="prog"><i id="oProg"></i></div><div id="oBody"></div></section>
+
+  <section class="screen" id="quiz"><h2>Reto relámpago</h2><p class="sub" id="qCount"></p><div class="prog"><i id="qProg"></i></div><div id="qBody"></div></section>
+
+  <section class="screen" id="speech">
+    <h2>¡Habla como un pro!</h2><p class="sub">Escucha cada parte, dila en voz alta y toca ✓. Haz una pausa en cada /.</p>
+    <div class="unitTabs" role="group" style="flex-wrap:wrap" id="spTabs"></div>
+    <div id="spBody"></div>
+    <div class="row"><button class="btn sun" id="spAll">🔊 Escuchar todo</button><button class="btn sun small" id="spSlow" aria-label="Todo despacio">🐢</button></div>
+    <div class="rec" id="recBox"><button class="btn" id="recBtn">🎙️ Grabarme</button><button class="btn alt" id="playBtn" disabled>▶️ Escucharme</button></div>
+    <p class="tip" id="recMsg">Grábate diciendo el speech completo y escucha cómo suenas.</p>
+  </section>
+
+  <section class="screen" id="final"><h2>Examen final</h2><p class="sub" id="fCount"></p><div class="prog"><i id="fProg"></i></div><div id="fBody"></div></section>
+</div>
+<script>
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const MINI='<svg class="mini" viewBox="0 0 60 50" aria-hidden="true"><ellipse cx="30" cy="32" rx="28" ry="16" fill="#7CCB4A"/><circle cx="18" cy="16" r="10" fill="#7CCB4A"/><circle cx="40" cy="16" r="10" fill="#7CCB4A"/><circle cx="18" cy="15" r="6" fill="#fff"/><circle cx="40" cy="15" r="6" fill="#fff"/><circle cx="19" cy="16" r="3" fill="#173B40"/><circle cx="41" cy="16" r="3" fill="#173B40"/><path d="M8 36 Q30 48 52 34" stroke="#3F8A22" stroke-width="3" fill="none" stroke-linecap="round"/></svg>';
+const MISSIONS=['learn','cards','ce','order','quiz','speech','final'];
+
+/* ===== progreso ===== */
+let S={stars:0,done:{},said:{},orders:{}};
+try{const r=localStorage.getItem('laguna2');if(r)S=Object.assign(S,JSON.parse(r));}catch(e){}
+function save(){try{localStorage.setItem('laguna2',JSON.stringify(S));}catch(e){}}
+function addStar(n=1){if(n<=0)return;S.stars+=n;save();const el=$('#stars');el.textContent='⭐ '+S.stars;el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop');}
+function markDone(k){S.done[k]=true;save();paintDone();}
+function paintDone(){MISSIONS.forEach(k=>{$('#d-'+k).textContent=S.done[k]?'🏅':'';});$('#stars').textContent='⭐ '+S.stars;
+  $('#trophy').classList.toggle('on',MISSIONS.slice(0,6).every(k=>S.done[k])&&!S.done.final);}
+$('#reset').onclick=()=>{if(confirm('¿Borrar estrellas y medallas?')){S={stars:0,done:{},said:{},orders:{}};save();paintDone();}};
+
+/* ===== audio ===== */
+const TTS='speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+let voices=[];
+function loadVoices(){try{voices=speechSynthesis.getVoices()||[];}catch(e){}}
+if(TTS){loadVoices();speechSynthesis.onvoiceschanged=loadVoices;}
+function pickVoice(){return voices.find(v=>/en[-_]US/i.test(v.lang)&&/female|samantha|google us/i.test(v.name))||voices.find(v=>/en[-_]US/i.test(v.lang))||voices.find(v=>/^en/i.test(v.lang));}
+function noAudio(){$('#notice').classList.add('on');}
+function say(text,slow){
+  if(!TTS){noAudio();return;}
+  const clean=text.replace(/<[^>]+>/g,'').replace(/\s*\/+\s*/g,', ');
+  const go=()=>{try{
+    const u=new SpeechSynthesisUtterance(clean);u.lang='en-US';u.rate=slow?0.55:0.85;u.pitch=1.05;
+    const v=pickVoice();if(v)u.voice=v;
+    let started=false;u.onstart=()=>{started=true;$('#notice').classList.remove('on');};
+    u.onerror=e=>{if(e.error!=='interrupted'&&e.error!=='canceled')noAudio();};
+    speechSynthesis.speak(u);if(speechSynthesis.paused)speechSynthesis.resume();
+    setTimeout(()=>{if(!started&&!speechSynthesis.speaking)noAudio();},2500);
+  }catch(e){noAudio();}};
+  if(speechSynthesis.speaking||speechSynthesis.pending){speechSynthesis.cancel();setTimeout(go,120);}else go();
+}
+function stopAudio(){try{TTS&&speechSynthesis.cancel();}catch(e){}}
+$('#testAudio').onclick=()=>say('Hello Ignacio! You can do it!');
+if(!TTS)noAudio();
+
+/* ===== cuenta regresiva ===== */
+(function(){const exam=new Date(2026,9,13);const now=new Date();now.setHours(0,0,0,0);const d=Math.round((exam-now)/864e5);
+$('#countdown').textContent=d>1?`Faltan ${d} días para el examen`:d===1?'¡El examen es mañana!':d===0?'¡Hoy es el examen! Tú puedes':'¡Examen terminado!';})();
+
+/* ===== navegación ===== */
+function go(id){$$('.screen').forEach(s=>s.classList.toggle('on',s.id===id));$('#backBtn').classList.toggle('show',id!=='home');window.scrollTo(0,0);stopAudio();
+  ({learn:renderLearn,cards:showCard,ce:startCE,order:startOrder,quiz:startQuiz,speech:renderSpeech,final:startFinal}[id]||(()=>{}))();}
+$$('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
+$('#backBtn').onclick=()=>go('home');
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function endScreen(icon,title,msg,again){return `<div class="end"><div class="big">${icon}</div><h3>${title}</h3><p>${msg}</p><div class="row"><button class="btn" id="again">${again}</button><button class="btn alt" onclick="go('home')">Inicio</button></div></div>`;}
+
+/* ===== 1. reglas ===== */
+const LESSONS=[
+ ["✌️ <b>Both</b> = ambos / los dos. Se usa para decir en qué se <b>parecen</b>.","Both have bumpy skin."],
+ ["🔀 <b>but</b> = pero. Se usa para decir en qué son <b>diferentes</b>.","An alligator has a broad snout, but a crocodile has a narrow snout."],
+ ["👯 <b>look alike</b> / <b>look similar</b> = se parecen.","An alligator and a crocodile look alike, but they are different."],
+ ["👀 <b>Sense verbs</b>: look, sound, feel, smell, taste. Van con <b>adjetivo</b>: soft, good, nice. Nunca softly ni well.","My cat's fur feels soft."],
+ ["❓ <b>because</b> = porque. Dice la <b>CAUSA</b> (por qué pasó).","I got sick because I didn't wear a coat."],
+ ["➡️ <b>so</b>, <b>therefore</b>, <b>as a result</b> dicen el <b>EFECTO</b> (qué pasó después).","I studied hard. As a result, I passed the exam."],
+ ["➕ <b>Not only that, but…</b> = además. <b>In the end</b> = al final.","Not only that, but it started to rain."],
+ ["🎤 Todo speech tiene <b>INTRO</b> (de qué hablas), <b>BODY</b> (lo importante) y <b>ENDING</b> (tu opinión o qué harás).","This is what happened on my test."]];
+function renderLearn(){$('#learnBody').innerHTML=LESSONS.map((l,i)=>`<div class="lesson">${l[0]}<div class="ex"><span><i>${l[1]}</i></span><button class="spk" data-l="${i}" aria-label="Escuchar">🔊</button></div></div>`).join('');
+ $$('#learnBody .spk').forEach(b=>b.onclick=()=>say(LESSONS[+b.dataset.l][1]));}
+$('#learnDone').onclick=()=>{if(!S.done.learn)addStar(3);markDone('learn');go('home');};
+
+/* ===== 2. tarjetas ===== */
+const CARDS={
+ 9:[["👯","look alike","luk a-LÁIK","se parecen","Alligators and crocodiles look alike."],["🤝","similar","SÍ-mi-lar","parecido","They are similar."],["🔀","different","DÍ-fe-rent","diferente","They are different."],
+    ["✌️","both","BÓUZ","ambos / los dos","Both have bumpy skin."],["🐽","snout","SNÁUT","hocico","A crocodile has a narrow snout."],["🦎","bumpy skin","BÁM-pi SKIN","piel rugosa","Both have bumpy skin."],
+    ["🦷","sharp teeth","SHARP TÍZ","dientes filosos","Their teeth are sharp."],["↔️","broad","BROD","ancho","An alligator has a broad snout."],["🥢","narrow","NÉ-rou","angosto","A crocodile has a narrow snout."],
+    ["🟤","brownish","BRÁU-nish","cafecito","An alligator is brownish."],["🟢","greenish","GRÍ-nish","verdoso","A crocodile is greenish."],
+    ["🐕","bark","BARK","ladrar","My dog can bark."],["💚","alive","a-LÁIV","vivo","My dog is alive and real."],["⚫","black spot","BLAK SPOT","mancha negra","They are white with black spots."],
+    ["🐶","wag","UÁG","mover la cola","My dog wags its tail."],["🧸","fur","FER","pelaje","My dog has soft fur."],["🐝","painful sting","PÉIN-ful STING","picadura dolorosa","Bees and wasps have painful stings."],
+    ["🦋","antennae","an-TÉ-ni","antenas","A butterfly has long, thin antennae."]],
+ 10:[["🤒","sick","SIK","enfermo","I got terribly sick."],["🤧","get a cold","GUET a KÓULD","resfriarse","I got a terrible cold."],["❄️","winter","UÍN-ter","invierno","It was a cold winter day."],
+    ["🧥","coat","KÓUT","abrigo","I didn't wear a coat."],["🧊","slippery","SLÍ-pe-ri","resbaloso","The street was slippery."],["💥","fall down","FOL DÁUN","caerse","I fell down."],
+    ["📚","study for a test","STÁ-di for a TEST","estudiar para un examen","I study for my tests."],["🌟","get a good mark","guet a GUD MARK","sacar buena nota","I got a good mark."],
+    ["😰","be stressed","bi STREST","estar estresado","I was stressed about the test."],["😌","feel relaxed","fil ri-LÁKST","sentirse relajado","I feel relaxed now."],
+    ["✅","pass","PAS","aprobar","I passed the exam."],["❌","fail","FÉIL","reprobar","I failed the test."],["🛡️","careful","KÉR-ful","cuidadoso","I will be more careful."],
+    ["❓","because","bi-KÓS","porque (la causa)","I got sick because I didn't wear a coat."],["➡️","so","SÓU","así que (el efecto)","I studied, so I passed."],
+    ["📌","therefore","DZÉR-for","por lo tanto","Therefore, I passed the exam."],["🎯","as a result","as a ri-SÁLT","como resultado","As a result, I passed."],["➕","not only that","not ÓUN-li DZAT","además","Not only that, but it started to rain."]]};
+let unit=9,ci=0;
+$$('[data-unit]').forEach(b=>b.onclick=()=>{unit=+b.dataset.unit;ci=0;$$('[data-unit]').forEach(x=>x.setAttribute('aria-pressed',x===b));showCard();});
+function showCard(){const c=CARDS[unit][ci];$('#flip').classList.remove('turned');$('#cEmo').textContent=c[0];$('#cEmo2').textContent=c[0];$('#cWord').textContent=c[1];$('#cPron').textContent='se dice: '+c[2];$('#cEs').textContent=c[3];$('#cEx').textContent=c[4];$('#cardProg').style.width=((ci+1)/CARDS[unit].length*100)+'%';}
+function flip(){$('#flip').classList.toggle('turned');}
+$('#flip').onclick=flip;$('#flip').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();flip();}};
+$('#cSpeak').onclick=()=>{const c=CARDS[unit][ci];say(c[1]+'. '+c[4]);};
+$('#cSlow').onclick=()=>{const c=CARDS[unit][ci];say(c[1]+'. '+c[4],true);};
+$('#cPrev').onclick=()=>{if(ci>0){ci--;showCard();}};
+$('#cNext').onclick=()=>{ci++;if(ci>=CARDS[unit].length){ci=0;addStar(3);
+  if(unit===9){unit=10;$$('[data-unit]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.unit==='10'));alert('¡Terminaste la Unit 9! 🐊 Ahora la Unit 10.');}
+  else{markDone('cards');alert('¡Terminaste todas las tarjetas! 🏅');}}
+ showCard();};
+
+/* ===== 3. because o so ===== */
+const CE=[["I got sick","I didn't wear a coat.","because"],["It was raining,","I took an umbrella.","so"],["I fell down","the street was slippery.","because"],
+ ["I studied a lot,","I got a good mark.","so"],["I felt hot","there were too many people in the subway.","because"],["My bus was late,","I walked to school.","so"],
+ ["I was tired","I didn't sleep well.","because"],["I was hungry,","I ate a sandwich.","so"],["I failed the test","I didn't study at all.","because"],
+ ["The doll was pretty,","I bought it for my sister.","so"],["I got a terrible cold","I left my coat on the bench.","because"],["I practiced every day,","I did well on the spelling bee.","so"]];
+let ei,eOk,eOrder;
+function startCE(){ei=0;eOk=0;eOrder=shuffle(CE);renderCE();}
+function renderCE(){
+ if(ei>=eOrder.length){$('#ceProg').style.width='100%';const g=eOk>=10;
+  $('#ceBody').innerHTML=endScreen(g?'⚡':'💪',`${eOk} de ${eOrder.length}`,g?'¡Eres el rey de because y so!':'Necesitas 10 para la medalla. ¡Otra vuelta!','Jugar otra vez');
+  $('#again').onclick=startCE;addStar(eOk);if(g)markDone('ce');return;}
+ const [a,b,ans]=eOrder[ei];$('#ceProg').style.width=(ei/eOrder.length*100)+'%';
+ $('#ceBody').innerHTML=`<div class="q"><div class="say">${a} <span class="blank">?</span> ${b}</div></div><div class="cebtns"><button class="opt">because</button><button class="opt">so</button></div><div class="feedback" id="eFb"></div>`;
+ $$('#ceBody .opt').forEach(x=>x.onclick=()=>{
+  $$('#ceBody .opt').forEach(y=>{y.disabled=true;if(y.textContent===ans)y.classList.add('ok');});
+  if(x.textContent===ans){eOk++;$('#eFb').innerHTML=MINI+'¡Bien! Ahora repítelo en voz alta 🎤';}else{x.classList.add('bad');$('#eFb').innerHTML=MINI+(ans==='because'?'Va <b>because</b>: después viene la razón.':'Va <b>so</b>: después viene lo que pasó.');}
+  say(`${a} ${ans} ${b}`);setTimeout(()=>{ei++;renderCE();},3000);});}
+
+/* ===== 4. ordena ===== */
+const ORDERS=[
+ {t:"Dos perros llamados Rusty 🐶",l:[["INTRO","Susan and I both have dogs. The dogs are similar but different."],["BODY","Our dogs are both named Rusty."],["BODY","They are big and white with black spots."],["BODY","But Susan's dog is not a real dog. It's a robot dog."],["BODY","My dog is alive and real."],["ENDING","The two dogs are different, but we love our dogs."]]},
+ {t:"Batman y Spider-Man 🦇🕷️",l:[["INTRO","Batman and Spider-Man are alike, but they are different, too."],["BODY","Both wear costumes and masks."],["BODY","They both have a secret."],["BODY","Batman is serious, but Spider-Man is funny."],["BODY","Batman can't fly, but Spider-Man can crawl up walls."],["ENDING","They are similar but different. But I like them both."]]},
+ {t:"Mi examen 📝",l:[["INTRO","This is what happened on my test."],["BODY","I did well on the test because I studied a lot."],["BODY","I reviewed my notes every day."],["BODY","Not only that, but I was also lucky."],["BODY","As a result, I got the highest score."],["ENDING","Next time, I will study harder and get a perfect score."]]},
+ {t:"Un día de invierno ❄️",l:[["INTRO","This is what happened to me last winter."],["BODY","It was warm, so I took off my coat in the park."],["BODY","When I came back, my coat was gone."],["BODY","Not only that, but it started to rain."],["BODY","As a result, I got a terrible cold."],["ENDING","I will be more careful from now on."]]}];
+let oi,ostep,oMist,oShuf;
+function startOrder(){oi=0;loadOrder();}
+function loadOrder(){if(oi>=ORDERS.length){$('#oProg').style.width='100%';$('#oSub').textContent='';
+  $('#oBody').innerHTML=endScreen('🧩','¡Ordenaste los 4 speeches!','Ya sabes cómo se arma un speech: intro, body y ending.','Otra vez');$('#again').onclick=startOrder;markDone('order');return;}
+ ostep=0;oMist=0;oShuf=shuffle(ORDERS[oi].l.map((x,i)=>i));renderOrder();}
+function renderOrder(){const O=ORDERS[oi];$('#oSub').textContent=`${O.t} · Toca las oraciones en orden (${oi+1} de ${ORDERS.length})`;$('#oProg').style.width=(oi/ORDERS.length*100)+'%';
+ $('#oBody').innerHTML=`<div class="built" id="built">${O.l.slice(0,ostep).map(x=>`<div><small>${x[0]}</small>${x[1]}</div>`).join('')||'<p class="tip" style="margin:12px">¿Cuál va primero? Empieza por la INTRO.</p>'}</div><div class="order">${oShuf.map(i=>`<button class="pick ${i<ostep?'used':''}" data-i="${i}" ${i<ostep?'disabled':''}>${O.l[i][1]}</button>`).join('')}</div><div class="feedback" id="oFb"></div>`;
+ $$('#oBody .pick').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;
+  if(i===ostep){say(O.l[i][1]);ostep++;
+   if(ostep===O.l.length){addStar(oMist===0?3:1);renderOrder();$('#oFb').innerHTML=MINI+(oMist===0?'¡Perfecto, sin errores! ⭐⭐⭐':'¡Lo lograste! ⭐')+` <button class="btn small" id="oNext" style="margin-left:auto">Siguiente</button>`;$('#oNext').onclick=()=>{oi++;loadOrder();};}
+   else renderOrder();}
+  else{oMist++;b.classList.add('bad');$('#oFb').innerHTML=MINI+'Esa todavía no. ¿Qué va ahora?';setTimeout(()=>b.classList.remove('bad'),700);}});}
+
+/* ===== 5. preguntas ===== */
+const BANK=[
+ ["¿Qué significa <b>look alike</b>?",["se parecen","se miran","son amigos"]],
+ ["¿Qué es <b>fur</b>?",["pelaje","fuego","cola"]],
+ ["¿Qué significa <b>alive</b>?",["vivo","solo","grande"]],
+ ["¿Qué significa <b>snout</b>?",["hocico","nieve","cola"]],
+ ["¿Qué significa <b>slippery</b>?",["resbaloso","dormido","pequeño"]],
+ ["¿Qué significa <b>get a cold</b>?",["resfriarse","tener frío en la mano","comer helado"]],
+ ["How are an alligator and a crocodile similar?",["Both have bumpy skin.","Both can fly.","Both are robots."]],
+ ["An alligator has a broad snout, but a crocodile has a <span class='blank'>?</span> snout.",["narrow","broad","bumpy"]],
+ ["An alligator is brownish, but a crocodile is <span class='blank'>?</span>.",["greenish","brownish","yellow"]],
+ ["A llama has <span class='blank'>?</span> ears, but an alpaca has short, pointed ears.",["long, curved","short, pointed","no"]],
+ ["A bee has a round, hairy body, but a wasp has a <span class='blank'>?</span> body.",["slender, smooth","round, hairy","big, soft"]],
+ ["A butterfly has long, thin antennae, but a moth has <span class='blank'>?</span> antennae.",["short, feathery","long, thin","no"]],
+ ["Both have <b>long necks</b>. ¿De quién hablamos?",["a llama and an alpaca","a bee and a wasp","a butterfly and a moth"]],
+ ["Both have <b>painful stings</b>. ¿De quién hablamos?",["a bee and a wasp","a llama and an alpaca","a butterfly and a moth"]],
+ ["Both have <b>four wings</b>. ¿De quién hablamos?",["a butterfly and a moth","a llama and an alpaca","an alligator and a crocodile"]],
+ ["My cat's fur feels <span class='blank'>?</span>.",["soft","softly"]],
+ ["Amy's plan sounds <span class='blank'>?</span>.",["good","well"]],
+ ["This pizza tastes <span class='blank'>?</span>.",["delicious","deliciously"]],
+ ["Batman <span class='blank'>?</span> fly, but Spider-Man can crawl up walls.",["can't","can"]],
+ ["Batman is <span class='blank'>?</span>, but Spider-Man is funny.",["serious","funny","quiet"]],
+ ["Which dog is a robot?",["Susan's dog","My dog","Both dogs"]],
+ ["¿Qué palabra dice la <b>CAUSA</b>?",["because","so","as a result"]],
+ ["¿Cuál dice el <b>EFECTO</b>?",["as a result","because"]],
+ ["I studied hard. <span class='blank'>?</span>, I passed the exam.",["Therefore","Because"]],
+ ["¿Qué significa <b>Not only that</b>?",["además","solamente","nunca"]],
+ ["¿Qué significa <b>In the end</b>?",["al final","al principio","en medio"]],
+ ["Winter story: Why did the boy get sick?",["He didn't wear a coat.","He ate ice cream.","He ran too much."]],
+ ["Test story: I reviewed my notes every day and took a practice test <span class='blank'>?</span> a week.",["twice","never","a lot of"]],
+ ["Next time, I will study harder and get a <span class='blank'>?</span> score.",["perfect","similar","sleepy"]],
+ ["¿Qué parte del speech dice tu opinión o qué harás después?",["ENDING","INTRO","BODY"]]];
+const CEQ=CE.map(([a,b,ans])=>[`${a} <span class='blank'>?</span> ${b}`,[ans,ans==='so'?'because':'so']]);
+function runQuiz(cfg){let i=0,ok=0;const qs=shuffle(cfg.pool).slice(0,cfg.n);
+ function r(){
+  if(i>=qs.length){$(cfg.prog).style.width='100%';$(cfg.count).textContent='';cfg.end(ok,qs.length);return;}
+  const [q,opts]=qs[i];const correct=opts[0];const o=shuffle(opts);
+  $(cfg.count).textContent=`Pregunta ${i+1} de ${qs.length} · Aciertos: ${ok}`;$(cfg.prog).style.width=(i/qs.length*100)+'%';
+  $(cfg.body).innerHTML=`<div class="q"><div class="say">${q}</div></div><div class="opts">${o.map(x=>`<button class="opt">${x}</button>`).join('')}</div><div class="feedback" id="fb"></div>`;
+  $$(cfg.body+' .opt').forEach(b=>b.onclick=()=>{
+   $$(cfg.body+' .opt').forEach(x=>{x.disabled=true;if(x.textContent===correct)x.classList.add('ok');});
+   if(b.textContent===correct){ok++;$('#fb').innerHTML=MINI+'¡Correcto! 🎉';}else{b.classList.add('bad');$('#fb').innerHTML=MINI+'Casi. Es: <b>'+correct+'</b>';}
+   if(q.includes('blank'))say(q.replace(/<span class='blank'>\?<\/span>/,correct).replace(/^[^:]*: /,''));else if(!q.startsWith('¿'))say(correct);
+   setTimeout(()=>{i++;r();},2400);});}
+ r();}
+function startQuiz(){runQuiz({pool:BANK,n:12,body:'#qBody',prog:'#qProg',count:'#qCount',end:(ok,n)=>{const g=ok>=10;
+  $('#qBody').innerHTML=endScreen(g?'🏆':ok>=7?'🌟':'💪',`${ok} de ${n}`,g?'¡Increíble! Gus está muy orgulloso.':'Necesitas 10 para la medalla. ¡Tú puedes!','Jugar otra vez');
+  $('#again').onclick=startQuiz;addStar(ok);if(g)markDone('quiz');}});}
+function startFinal(){runQuiz({pool:BANK.concat(CEQ),n:15,body:'#fBody',prog:'#fProg',count:'#fCount',end:(ok,n)=>{
+  if(ok>=12){addStar(10);markDone('final');const d=new Date().toLocaleDateString('es-GT');
+   $('#fBody').innerHTML=`<div class="cert"><div class="big" style="font-size:60px">🏆🐊</div><h3>Diploma de Speaking</h3><p>Se otorga a</p><div class="name">Ignacio</div><p>por sacar <b>${ok} de ${n}</b> en el Examen final de la Laguna del Inglés.<br>¡Está listo para su examen del 13 de octubre!</p><p class="tip">${d}</p><div class="row"><button class="btn" id="again">Repetir</button><button class="btn alt" onclick="go('home')">Inicio</button></div></div>`;
+   $('#again').onclick=startFinal;}
+  else{addStar(ok>=8?2:1);$('#fBody').innerHTML=endScreen('💪',`${ok} de ${n}`,'Necesitas 12 para el diploma. Repasa las misiones y vuelve a intentarlo.','Intentar otra vez');$('#again').onclick=startFinal;}}});}
+
+/* ===== 6. speeches ===== */
+const C={INTRO:'#0E6E7A',BODY:'#E8743B',ENDING:'#4C9A2A'};
+const SPEECHES=[
+ {t:"Gato y perro 🐱🐶",l:[["INTRO","A cat and a dog are similar, / but they are different."],["BODY","Both have soft fur / and four legs."],["BODY","Both are good pets, / too."],["BODY","But they are also / very different."],["BODY","A dog can bark, / but a cat can't bark."],["BODY","A dog is big, / but a cat is small."],["ENDING","They are similar but different. / But I like them both."]]},
+ {t:"Lagarto y cocodrilo 🐊",l:[["INTRO","An alligator and a crocodile / look alike, / but they are different."],["BODY","Both have bumpy skin / and sharp teeth."],["BODY","An alligator has a broad snout, / but a crocodile / has a narrow snout."],["BODY","An alligator is brownish, / but a crocodile / is greenish."],["ENDING","Now / I can tell the difference / between them."]]},
+ {t:"Mi examen 📝",l:[["INTRO","This is what happened / on my test."],["BODY","I got a good mark / because I studied a lot."],["BODY","I reviewed my notes / every day."],["BODY","Not only that, / but I also slept well."],["BODY","As a result, / I passed the test."],["ENDING","Next time, / I will study hard again."]]},
+ {t:"Día de invierno ❄️",l:[["INTRO","This is what happened to me / last winter."],["BODY","I got terribly sick / because I didn't wear a coat."],["BODY","It started to rain, / and it became very cold."],["BODY","As a result, / I got a terrible cold."],["ENDING","I will be more careful / from now on."]]}];
+let sp=0;
+$('#spTabs').innerHTML=SPEECHES.map((s,i)=>`<button data-sp="${i}" aria-pressed="${i===0}" style="flex:1 1 45%">${s.t}</button>`).join('');
+$$('[data-sp]').forEach(b=>b.onclick=()=>{sp=+b.dataset.sp;$$('[data-sp]').forEach(x=>x.setAttribute('aria-pressed',x===b));renderSpeech();});
+function renderSpeech(){const L=SPEECHES[sp].l;
+ $('#spBody').innerHTML=L.map((l,i)=>`<div class="line ${S.said[sp+'-'+i]?'said':''}" data-i="${i}"><span class="tag" style="background:${C[l[0]]}">${l[0]}</span><p>${l[1]}</p><button class="spk" aria-label="Escuchar">🔊</button><button class="chk" aria-label="Ya lo dije">✓</button></div>`).join('');
+ $$('#spBody .line').forEach(el=>{const i=+el.dataset.i;
+  el.querySelector('.spk').onclick=()=>say(L[i][1]);
+  el.querySelector('.chk').onclick=()=>{const k=sp+'-'+i;if(!S.said[k]){S.said[k]=true;addStar(1);}el.classList.add('said');save();
+   if(L.every((_,j)=>S.said[sp+'-'+j]))$('#recMsg').textContent='¡Terminaste este speech! Ahora grábate diciéndolo completo.';
+   if(SPEECHES.every((s,x)=>s.l.every((_,j)=>S.said[x+'-'+j]))&&!S.done.speech){markDone('speech');alert('¡Dijiste los 4 speeches! 🏅');}};});}
+$('#spAll').onclick=()=>say(SPEECHES[sp].l.map(l=>l[1]).join(' '));
+$('#spSlow').onclick=()=>say(SPEECHES[sp].l.map(l=>l[1]).join(' '),true);
+
+/* grabadora */
+let rec=null,chunks=[],audioURL=null,stream=null;
+$('#recBtn').onclick=async()=>{
+ if(rec&&rec.state==='recording'){rec.stop();return;}
+ try{
+  stopAudio();stream=await navigator.mediaDevices.getUserMedia({audio:true});
+  rec=new MediaRecorder(stream);chunks=[];
+  rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
+  rec.onstop=()=>{stream.getTracks().forEach(t=>t.stop());if(audioURL)URL.revokeObjectURL(audioURL);audioURL=URL.createObjectURL(new Blob(chunks,{type:rec.mimeType||'audio/webm'}));
+   $('#playBtn').disabled=false;$('#recBtn').textContent='🎙️ Grabar otra vez';$('#recBtn').classList.remove('recording');$('#recMsg').textContent='¡Listo! Toca Escucharme. ¿Hiciste las pausas?';addStar(1);};
+  rec.start();$('#recBtn').textContent='⏹️ Detener';$('#recBtn').classList.add('recording');$('#recMsg').textContent='Grabando… di el speech completo.';
+ }catch(e){$('#recMsg').textContent='No se pudo usar el micrófono aquí. Di el speech en voz alta frente a papá o mamá.';}};
+$('#playBtn').onclick=()=>{if(audioURL)new Audio(audioURL).play();};
+
+paintDone();
+
+</script>
+</body>
+</html>
